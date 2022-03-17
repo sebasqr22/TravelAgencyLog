@@ -1,6 +1,13 @@
 %arco(aerolinea, vuelo, AtoDestino, TiempoEstimado, Clase, Costo)
-
-arco(COPA, CM404, SJO, PTY, 1, Ambas, 300).
-arco(COPA, CM401, PTY, NED, 8, Ambas, 1300).
+%consult("/Users/sebastianqr.2208/Documents/GitHub/TravelAgencyLog/prueba.pl")
+arco(COPA, CM404, SJO, PTY, 1.0, Ambas, 300).
+arco(AMERICAN, AA1353, SJO, MIA, 2.45, 400). %miami
+arco(AMERICAN, AA865, SJO, JFK, 5.15, 500). %ny
+arco(AEROMEXICO, AM656, SJO, MEX, 3.0, 300).
+arco(COPA, CM759, PTY, GRU, 7, 1000). %brazil sao pablo
+arco(COPA, CM432, PTY, MEX, 4.10, 400).
+arco(COPA, CM150, PTY, MDE, 0.40, 200). %medellin colombia
+arco(COPA, CM446, PTY, MCO, 3.40, 420). %orlando
+arco(COPA, cm277, PTY, SCL, 6.30, 700) %chile santiago
 
 c(X):-arco(X, _, _, _, _, _, _).
