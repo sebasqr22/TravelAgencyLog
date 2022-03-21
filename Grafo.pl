@@ -43,7 +43,7 @@ arco(latam, az681, pty, gru, 7, ambas, 1050). %brazil sao pablo
 arco(copa, cm432 , pty, mex, 4.10, economica , 400).
 arco(united, cm432 , pty, mex, 4.10, de_negocios , 500).
 
-arco(copa, cm150 , pty, mde, 0.40, de negocios , 200). %medellin colombia
+arco(copa, cm150 , pty, mde, 0.40, de_negocios , 200). %medellin colombia
 arco(avianca, ar707 , pty, mde, 0.40, de_negocios , 230). %medellin colombia
 
 arco(copa, cm446 , pty, mco, 3.40, ambas , 420). %orlando
@@ -66,11 +66,11 @@ arco(avianca, au2412 , jfk, sjo, 5.15, economica , 505). %ny
 arco(aeromexico, am657, mex, sjo, 3.0, de_negocios , 300).
 arco(avianca, am656 , sjo, mex, 3.0, ambas , 300). %mex
 
-arco(copa, cm760, gru, pty, 7, de negocios, 1000). %brazil sao pablo
+arco(copa, cm760, gru, pty, 7, de_negocios, 1000). %brazil sao pablo
 arco(latam, az681, gru, pty, 7, ambas, 1050). %brazil sao pablo
 
 arco(copa, cm433, mex, pty, 4.10, economica, 400).
-arco(united, cm432 , mex, pty, 4.10, de negocios , 500).
+arco(united, cm432 , mex, pty, 4.10, de_negocios , 500).
 
 arco(copa, cm151, mde, pty, 0.40, economica, 200). %medellin colombia
 arco(avianca, ar707 , mde, pty, 0.40, de_negocios , 230). %medellin colombia
