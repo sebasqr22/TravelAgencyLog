@@ -1,7 +1,13 @@
-:- [diets].
+:- [vuelos].
 :- ['GLC'].
+:- ['Grafo'].
+
+%consult("/Users/sebastianqr.2208/Documents/GitHub/TravelAgencyLog/Tarea.pl").
 
 % Definici�n de reglas para los par�metros
+
+origen(X):- lugar(Y), askOrigen(X,Y).
+
 tipo(X):- posibles_tipos(L), askTipo(X,L).
 calorias(X):- askCalorias(X, 1200, 4200).
 padecimientos(X):- posibles_padecimientos(L), askPadecimientos(X,L).
@@ -13,29 +19,45 @@ main:- startup1.
 
 startup1:-
    write('Bienvenido a TravelAgencyLog la mejor lógica de llegar a su destino.'),
-   write('Por Favor indíqueme cual es el origen de su vuelo.'),
-   nl,
-   startup2.
-
-startup1:-startup1.
-
-startup2:-
-   write('Excelente iniciativa. Estamos para asesorarte en todo lo que necesites.'),
    nl,
    identify.
-startup2:-
-   write('No te entend�, �Puedes volverlo a formular?'),
-   nl,
-   startup2.
+
 
 identify:-
   retractall(known(_,_)),         % clear stored information
-  dieta(X),
+  vuelo(X), %tomar vuelo disponible
   write(X),nl.
-identify:-
-  write('Sus selecciones no calzan con ninguna dieta.'),nl.
 
-% Preguntar el tipo de dieta que prefiere
+identify:-
+  write('Sus selecciones no calzan con ningun vuelo.'),nl.
+
+
+
+
+askOrigen(X,_):-  %Se pregunta por el lugar de origen del vuelo
+  known(tipo,X), !.
+
+askOrigen(X,Menu):-  % Si no se conoce entonces se pregunta y se guarda como "known"
+  write('Por favor indiqueme cual es el origen de su vuelo: '),
+  nl, display_menu(Menu),
+  my_read(ListResponse),
+  askOrigenAux(X,ListResponse, Menu).
+
+askOrigen(X):- askOrigen(X).
+
+askOrigenAux(X,ListResponse, Menu):-
+  oracion(ListResponse,[]),
+  miembro(X,ListResponse),
+  miembro(X,Menu),
+  !,
+  asserta(known(origen,X)).
+
+
+askOrigenAux(_X,_ListResponse,_Menu):-
+  write('No comprendo lo que indicaste, Puedes volverlo a formular?'),
+  !,
+  fail.
+
 askTipo(X,_):-  % Si ya se conoce entonces solo se toma la conocida
   known(tipo,X), !.
 

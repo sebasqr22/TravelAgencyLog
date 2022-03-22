@@ -36,6 +36,9 @@ dieta('Para mantener tanta actividad física debe de consumir más calorías'):-
   calorias(Cal), (Cal =< 2000),
   actividad(A), (A >= 4).
 
+vuelo('hola'):-
+    origen(X).
+
 %%% DIETA 1
 dieta('Su dieta sería:
 Desayuno:  4 Huevos picados con verduras. 
