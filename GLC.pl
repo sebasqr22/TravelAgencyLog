@@ -1,66 +1,69 @@
 % Oraci�n: Sintagma inicial del BNF. A partir de este, se divide en los
 % distintos sintagmas y elementos de las oraciones v�lidas Para
 % verificar si una oraci�n es v�lida o no, se escribe
-% oracion(Lista_palabras_de_la_oraci�n,[]).
 
 
 
-oracion(S0,S):-sintagma_nominal(S0,S1),sintagma_verbal(S1,S).
-oracion(S0,S):-advebio_negacion_afirmacion(S0,S1),sintagma_nominal(S1,S2),sintagma_verbal(S2,S).
-oracion(S0,S):-sintagma_verbal(S0,S). %%%%%%%
-oracion(S0,S):-sintagma_nominal(S0,S).
-oracion(S0,S):-advebio_negacion_afirmacion(S0,S).
+% DIFERENTES POSIBLES ESTRUCTURAS PARA LAS ORACIONES INTRODUCIDAS POR EL USUARIO
+% oracion(Lista_palabras,[]).
+oracion(S0,S):-sintagma_nominal(S0,S1),sintagma_verbal(S1,S). % orcaion formada por un sintagma nominal y un sintagma verbal
+oracion(S0,S):-advebio(S0,S1),sintagma_nominal(S1,S2),sintagma_verbal(S2,S). % orcaion formada por un adverbio, un sintagma nominal y un sintagma verbal
+oracion(S0,S):-sintagma_verbal(S0,S). % orcaion formada por un sintagma verbal
+oracion(S0,S):-sintagma_nominal(S0,S). % orcaion formada por un sintagma nominal
+oracion(S0,S):-advebio(S0,S). % orcaion formada por un adverbio
 
-%sintagma_nominal: corresponde a los pronombres, nombres y complementos directos que pueden ser utilizados como sujeto en las oraciones
+% SINTAGMA NOMINAL DE LA ORACION
+% formado por pronombres, nombres y complementos directos
 sintagma_nominal(S0,S):-pronombre(S0,S).
 sintagma_nominal(S0,S):-complemento_directo(S0,S).
 
-%complemento_directo: comprende todos las posibles combinaciones válidas de nombres, adjetivos, y determinantes.
-complemento_directo(S0,S):-nombre(S0,S).
-complemento_directo(S0,S):-adjetivo(S0,S).
-complemento_directo(S0,S):-nombre(S0,S1),adjetivo(S1,S).
-complemento_directo(S0,S):-determinante(S0,S1),nombre(S1,S).
-complemento_directo(S0,S):-determinante(S0,S1),nombre(S1,S2),adjetivo(S2,S).
-sintagma_verbal(S0,S):-verbo_transitivo(S0,S).
-sintagma_verbal(S0,S):-verbo_transitivo(S0,S1),complemento_directo(S1,S).%%%%
-sintagma_verbal(S0,S):-verbo_transitivo(S0,S1),verbo_infinitivo(S1,S).
+% COMPLEMENTO DIRECTO DE LA ORACION
+% combinaciones de nombres, adjetivos, y articulos.
+complemento_directo(S0,S):-nombre(S0,S). % solo lo forma un nombre
+complemento_directo(S0,S):-adjetivo(S0,S). % solo lo forma un adjetivo
+complemento_directo(S0,S):-nombre(S0,S1),adjetivo(S1,S). % se forma de un nombre y un adjetivo
+complemento_directo(S0,S):-articulo(S0,S1),nombre(S1,S). % se forma de un articulo y un nombre
+complemento_directo(S0,S):-articulo(S0,S1),nombre(S1,S2),adjetivo(S2,S). % se forma de un articulo, un nombre y un adjetivo
+
+% SINTAGMA VERBAL
+% formado por pronombres, nombres y complementos directos
+sintagma_verbal(S0,S):-verbo_transitivo(S0,S). % solo lo forma un vervo conjugado
+sintagma_verbal(S0,S):-verbo_transitivo(S0,S1),complemento_directo(S1,S). % lo forma un verbo conjugado y un complemento directo
+sintagma_verbal(S0,S):-verbo_transitivo(S0,S1),verbo_infinitivo(S1,S). % lo forma un verbo tansitivo y un verbo infinitivo
 sintagma_verbal(S0,S):-verbo_transitivo(S0,S1),verbo_infinitivo(S1,S2),
-                                complemento_directo(S2,S).
+                                complemento_directo(S2,S).% lo forma un verbo tansitivo, un verbo infinitivo y un complemento directo
 
-% determinante: Son todos los articulos que pueden estar junto con un
-% nombre. Estan dados por
-% determinante(numero,genero,['determinante'|S],S). (singular, plural,
-% masculino, femenino)
-determinante(['el'|S],S).
-determinante(['mas'|S],S).
-determinante(['por'|S],S).
-determinante(['en'|S],S).
-determinante(['para'|S],S).
-determinante(['mi'|S],S).
-determinante(['este'|S],S).
-determinante(['al'|S],S).
-determinante(['a'|S],S).
-determinante(['los'|S],S).
-determinante(['a','los'|S],S).
-determinante(['en','los'|S],S).
-determinante(['la'|S],S).
-determinante(['en','la'|S],S).
-determinante(['a','la'|S],S).
-determinante(['las'|S],S).
-determinante(['en','las'|S],S).
-determinante(['a','las'|S],S).
-determinante(['un'|S],S).
-determinante(['a','un'|S],S).
-determinante(['unos'|S],S).
-determinante(['a','unos'|S],S).
-determinante(['una'|S],S).
-determinante(['a','una'|S],S).
-determinante(['unas'|S],S).
-determinante(['a','unas'|S],S).
+% TODOS LOS ARTICULOS QUE PUEDEN ACOMPAÑAR UN NOMBRE
+% articulo(['articulo'|S],S).
+articulo(['el'|S],S).
+articulo(['mas'|S],S).
+articulo(['por'|S],S).
+articulo(['en'|S],S).
+articulo(['para'|S],S).
+articulo(['mi'|S],S).
+articulo(['este'|S],S).
+articulo(['al'|S],S).
+articulo(['a'|S],S).
+articulo(['los'|S],S).
+articulo(['a','los'|S],S).
+articulo(['en','los'|S],S).
+articulo(['la'|S],S).
+articulo(['en','la'|S],S).
+articulo(['a','la'|S],S).
+articulo(['las'|S],S).
+articulo(['en','las'|S],S).
+articulo(['a','las'|S],S).
+articulo(['un'|S],S).
+articulo(['a','un'|S],S).
+articulo(['unos'|S],S).
+articulo(['a','unos'|S],S).
+articulo(['una'|S],S).
+articulo(['a','una'|S],S).
+articulo(['unas'|S],S).
+articulo(['a','unas'|S],S).
 
-%determinante: Son todos los nombres que pueden estár dados para un complemento directo o sujeto del sintagma nominal
-% Estan dados por nombre(persona(generalmente
-% t[tercera]),numero,genero,['nombre'|S],S)
+% POSIBLES NOMBRES QUE PUEDEN SER UTILIZADOS EN UNA ORACION EN EL COMPLEMENTO DIRECCTO Y EL SINTAGMA NOMINAL
+% nombre(['nombre'|S],S)
 nombre(['costarica'|S],S).
 nombre(['panama'|S],S).
 nombre(['brazil'|S],S).
@@ -92,10 +95,9 @@ nombre([_NumDolares,'dolares'|S],S).
 nombre(['activo'|S],S).
 nombre([_NumVeces,'veces','a','la','semana'|S],S).
 
-% adjetivos: Son todos los adjetivos que pueden estar dados para
-% describir un nombre de un complemento directo Estan dados por
-% adjetivo(numero,genero,['adjetivo'|S],S)
-adjetivo(['rapido'|S],S). % (singular, plural), (masculino, femenino)
+% POSIBLES ADJETIVOS UTILIZADOS EN UNA ORACION
+% adjetivo(['adjetivo'|S],S)
+adjetivo(['rapido'|S],S).
 adjetivo(['charter'|S],S).
 adjetivo(['economica'|S],S).
 adjetivo(['negocios'|S],S).
@@ -105,8 +107,8 @@ adjetivo(['simple'|S],S).
 adjetivo(['directo'|S],S).
 adjetivo(['indirecto'|S],S).
 
-%verbo_infinitivo: verbos infinitivos que se pueden usar en conjunto con los verbos transitivos disponibles.
-%Estan dados por verbo_infinitivo(['verbo_infinitivo'|S],S)
+% POSIBLES VERBOS INFINITIVOS UTILIZADOS EN UNA ORACION
+% verbo_infinitivo(['verbo_infinitivo'|S],S)
 verbo_infinitivo(['llevar'|S],S).
 verbo_infinitivo(['ser'|S],S).
 verbo_infinitivo(['ir'|S],S).
@@ -122,9 +124,8 @@ verbo_infinitivo(['tener'|S],S).
 verbo_infinitivo(['conseguir'|S],S).
 verbo_infinitivo(['obtener'|S],S).
 
-%verbo_transitivo: Son todos los verbos conjugados transitivos que se pueden utilizar en las oraciones
-% Estan dados por
-% verbo_transitivo(persona,numero,['verbo_transitivo'|S],S)
+% POSIBLES VERBOS TRANSITIVOS O CONJUGADOS UTILIZADOS EN UNA ORACION
+% verbo_transitivo(['verbo_transitivo'|S],S)
 verbo_transitivo(['salgo'|S],S).
 verbo_transitivo(['voy'|S],S).
 verbo_transitivo(['sale'|S],S).
@@ -140,9 +141,8 @@ verbo_transitivo(['he','pensado'|S],S).
 verbo_transitivo(['prefiero'|S],S).
 verbo_transitivo(['gusta'|S],S).
 
-% pronombre: Son todos los pronombres que se puede usar como sujeto de
-% las oraciones validas. Estan dados por
-% pronombre(persona,numero,genero,['pronombre'|S],S)
+% POSIBLES PRONOMBRES UTILIZADOS COMO SUJETO EN UNA ORACION
+% pronombre(['pronombre'|S],S)
 pronombre(['Yo'|S],S).
 pronombre(['yo'|S],S).
 pronombre(['Me'|S],S).
@@ -152,28 +152,24 @@ pronombre(['me'|S],S).
 pronombre(['mi'|S],S).
 
 
-
-%advebio_negacion_afirmacion: Son todas los adverbios de negación y afirmación que permite utilizar en las oraciones
-%Estan dados por advebio_negacion_afirmacion(['advebio_negacion_afirmacion'|S],S)
-advebio_negacion_afirmacion(['si'|S],S).
-advebio_negacion_afirmacion(['Si'|S],S).
-advebio_negacion_afirmacion(['Si,'|S],S).
-advebio_negacion_afirmacion(['si,', ''|S],S).
-advebio_negacion_afirmacion(['Si,'|S],S).
-advebio_negacion_afirmacion(['no'|S],S).
-advebio_negacion_afirmacion(['No'|S],S).
-advebio_negacion_afirmacion(['no,'|S],S).
-advebio_negacion_afirmacion(['No,'|S],S).
-advebio_negacion_afirmacion(['ninguno,'|S],S).
-
+% POSIBLES ADVERBIOS DE NEGACION Y AFIRMACION UTILIZADOS EN UNA ORACION
+% advebio(['advebio_negacion_afirmacion'|S],S)
+advebio(['si'|S],S).
+advebio(['Si'|S],S).
+advebio(['Si,'|S],S).
+advebio(['si,', ''|S],S).
+advebio(['Si,'|S],S).
+advebio(['no'|S],S).
+advebio(['No'|S],S).
+advebio(['no,'|S],S).
+advebio(['No,'|S],S).
+advebio(['ninguno,'|S],S).
 
 
 
-%my_read: Es la funci�n dada para leer el input del usuario,
-% de tal manera que se guarde como una lista donde cada �tomo es un
-% elemento de la lista, ya que as� se debe guardar para sea evaluado por
-% la regla oraci�n(). List es la lista que contiene lo que el usuario
-% escribi�.
+% REGLA PARA LEER LE ORACION DEL USUARIO. ESTA ORACION SE GUARDA COMO UNA LISTA DE PALABRAS PARA LUEGO SER EVALUADA
+% POR LA REGLA oracion.
+% oracion(). List contiene lo que el usuario escribe
 my_read(List):-
 read_string(user,"\n","\r",_,String), % divide la oracion en palabras
 atom_string(Atom,String),             % Convierte el atomo a un string

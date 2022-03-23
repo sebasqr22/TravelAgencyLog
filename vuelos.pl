@@ -1,43 +1,12 @@
 
-
+%LISTA DE MIEMBROS
 miembro(H,[H|_T]).
 miembro(X,[_H|T]) :-  miembro(X,T).
 
-% tipos: proteina, keto, vegana, pescatariana
-posibles_tipos([proteina, keto, vegana, pescatariana, []]).
+% LOS VUELOS SON REGLAS QUE DESCRIBEN UN VUELO DE UN PAIS DE ORIGEN A UN PAIS DE DESTINO
+% Si un vuelo cumple con todos los requisitos que propone el usuario, se imprime ese vuelo.
 
-
-
-% calorias: 1200-4200
-% padecimientos: diabetes, dislipidemia, hipercolesterolemia, sobrepeso, desnutrido
-posibles_padecimientos([diabetes, dislipidemia, hipercolesterolemia, sobrepeso, desnutrido, []]).
-% actividad: 0, 1, 2, 3, 4, 5, 6, 7 (veces a la semana)
-posibles_actividades([0, 1, 2, 3, 4, 5, 6, 7]).
-% comidas: la comida que traigan
-posibles_comidas(['gallo pinto', avena, granola, salchicha, 'jamón', pescado, carne, huevo, verduras, aguacate, leche, 'maní', fruta, papa, carne, tortilla, queso, pollo, 'atún']).
-
-%%% Regañadas
-/*
-dieta('Es necesario aumentar la actividad física si desea consumir tantas calorías diarias'):-
-  calorias(Cal), (Cal >= 3000),
-  actividad(A), (A =< 1).
- 
-dieta('Es imposible asignarle una dieta vegana si no le gustan los vegetales'):-
-  tipo(X), X = vegana, comida(C), C = vegetales.
-
-dieta('Es imposible asignarle una dieta pescatariana si no le gusta el pescado'):-
-  tipo(X), X = pescatariana, comida(C), C = pescado.
-
-dieta('Si padece de sobrepeso no debe consumir tantas calorías diarias'):-
-  padecimientos(X), X = sobrepeso, calorias(Cal), (Cal >= 3000).
-
-dieta('Si está desnutrido debe consumir más calorías diarias'):-
-  padecimientos(X), X = desnutrido, calorias(Cal), (Cal < 2000).
-
-dieta('Para mantener tanta actividad física debe de consumir más calorías'):-
-  calorias(Cal), (Cal =< 2000),
-  actividad(A), (A >= 4).
-*/
+%%%% VUELOS DE IDA %%%%%
 vuelos('Su destino no puede ser el mismo que el origen'):-
     origen(O), destino(D), O = D.
 /*
@@ -103,8 +72,9 @@ vuelos('Su vuelo es el CM277, ruta PTY, Panama - SCL, Santiago con COPA Airlines
 vuelos('Su vuelo es el DL7606, ruta PTY, Panama - SJO, San Jose con Avianca.
      El tiempo estimado de vuelo es de 1 hora en clase economica. El costo del vuelo es de $280'):-
      origen(O), O = panama, destino(D), D = costarica, aerolineas(A), miembro(A, [avianca, []]), clase(C), miembro(C, [economica, ambas]), presupuesto(P), P >=280.
-     
-
+  
+    
+%%%%% VUELOS DE REGRESO %%%%%%
 vuelos('Su vuelo es el AA865, ruta JFK, Nueva York - SJO, San Jose con AMERICAN Airlines.
      El tiempo estimado de vuelo es de 5.15 horas en clase negocios. El costo del vuelo es de $500'):-
      origen(O), O = nuevaYork, destino(D), D = costarica, aerolineas(A), miembro(A, [american, []]), clase(C), miembro(C, [negocios, ambas]), presupuesto(P), P >=500.
