@@ -1,9 +1,3 @@
-% Oraci�n: Sintagma inicial del BNF. A partir de este, se divide en los
-% distintos sintagmas y elementos de las oraciones v�lidas Para
-% verificar si una oraci�n es v�lida o no, se escribe
-
-
-
 % DIFERENTES POSIBLES ESTRUCTURAS PARA LAS ORACIONES INTRODUCIDAS POR EL USUARIO
 % oracion(Lista_palabras,[]).
 oracion(S0,S):-sintagma_nominal(S0,S1),sintagma_verbal(S1,S). % orcaion formada por un sintagma nominal y un sintagma verbal
