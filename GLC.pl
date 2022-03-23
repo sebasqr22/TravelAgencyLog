@@ -1,3 +1,4 @@
+
 % DIFERENTES POSIBLES ESTRUCTURAS PARA LAS ORACIONES INTRODUCIDAS POR EL USUARIO
 % oracion(Lista_palabras,[]).
 oracion(S0,S):-sintagma_nominal(S0,S1),sintagma_verbal(S1,S). % orcaion formada por un sintagma nominal y un sintagma verbal

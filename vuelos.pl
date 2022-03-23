@@ -9,14 +9,7 @@ miembro(X,[_H|T]) :-  miembro(X,T).
 %%%% VUELOS DE IDA %%%%%
 vuelos('Su destino no puede ser el mismo que el origen'):-
     origen(O), destino(D), O = D.
-/*
-vuelos('Lamentablemente no tenemos un vuelo que se ajuste a sus necesidades. Intenta cambiar la aerolinea'):-
-    origen(O), O = costarica, destino(D), D = mexico, aerolineas(A), not(miembro(A, [avianca,aeromexico])).
 
-vuelos('Lamentablemente no tenemos un vuelo que se ajuste a sus necesidades. Tu presupuesto no es suficiente'):-
-    (origen(O), O = costarica, destino(D), D = mexico, clase(C), miembro(C, [economica, ambas]), presupuesto(P), P < 300 ; clase(C), C = negocios, presupuesto(P), P < 300;
-    origen(O), O = costarica, destino(D), D = panama, clase(C), miembro(C, [economica, ambas]), presupuesto(P), P < 280 ; clase(C), C = negocios, presupuesto(P), P < 300).
-*/
 vuelos('Su vuelo es el AF656, ruta SJO, Costa Rica - MEX, Mexico con AVIANCA Airlines.
       El tiempo estimado de vuelo es de 5.15 horas en clase economica. El costo del vuelo es de $300'):-
       origen(O), O = costarica, destino(D), D = mexico, aerolineas(A), miembro(A, [avianca, []]), clase(C), miembro(C, [economica, ambas]), presupuesto(P), P >=300.

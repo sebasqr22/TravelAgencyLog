@@ -11,24 +11,23 @@ clase(X):- clases(L), askClases(X,L). % Obtiene la clase del vuelo de la oracion
 presupuesto(X):- askPresupuesto(X). % Obtiene el presupuesto de la oracion introducida por el usuario
 
 % REGLA PRINCIPAL PARA LA EJECUCION DEL PROGRAMA TravelAgencyLog
-main:- startup1.
 
-% SE IMPRIME EL SALUDO DE VIENVENIDA A TravelAgencyLog
-startup1:-
-   write('Bienvenido a TravelAgencyLog: La mejor logica de llegar a su destino.'),
+main:- 
+   write('Bienvenido a TravelAgencyLog: La mejor logica para llegar a su destino.'), % SE IMPRIME EL MENSAJE DE BIENVENIDA AL USUARIO
    nl,
-   identify.
+   check.
 
 % SE BUSCA UN VUELO QUE SE AJUSTE A LOS REQUERIMIENTOS DEL USUARIO
-identify:-
+check:-
   retractall(known(_,_)), % Se borra la informacion respectiva al programa almacenada en memoria
   vuelos(X), % Tomar un vuelo disponible
   write(X),nl, % Una vez finalizado el programa, se imprime la informacion del vuelo
   write('Muchas gracias por utilizar TravelAgencyLog'). % Agradecimiento y finalizacion del programa
 
 % SI NO SE ENCUENTRA UN VUELO QUE SE AJUSTE A LOS REQUERIMIENTOS DEL USUARIO
-identify:-
-  write('Lamentablemente no tenemos un vuelo que se ajuste a sus necesidades.'),nl.
+check:-
+  write('Lamentablemente no tenemos un vuelo que se ajuste a sus necesidades.'),nl,
+  write('Muchas gracias por utilizar TravelAgencyLog').
 
 
 
@@ -41,7 +40,7 @@ askOrigen(X,_):-
 askOrigen(X,Menu):- 
   write('De las siguientes opciones, por favor indiqueme cual es el origen de su vuelo: '),
   nl, display_menu(Menu), % Se imprime una lista de los paises disponibles para viajar
-  my_read(ListResponse), % Se lee lo que el usuario intruduce 
+  my_read(ListResponse), % Se lee lo que el usuario introduce 
   askOrigenAux(X,ListResponse, Menu).
 
 askOrigen(X,Menu):- askOrigen(X,Menu).
@@ -153,7 +152,7 @@ askClasesAux(X,ListResponse,_Menu):-
   oracion(ListResponse,[]), % Se descompone la oracion del usuario
   miembro(Atom,ListResponse),
   miembro(Atom, ['No', 'no']), 
-  X=economica,
+  X=ambas,
   !,
   asserta(known(clase,X)).
 
@@ -164,11 +163,11 @@ askClasesAux(_X,_ListResponse,_Menu):-
   !,
   fail.
 
-% SE PREGUNTA AL USUARIO SI TIENE UN PREUPUESTO PARA EL VUELO
+% SE PREGUNTA AL USUARIO SI TIENE UN PRESUPUESTO PARA EL VUELO
 askPresupuesto(X):-  % Si ya se conoce entonces solo se toma la conocida
   known(presupuesto,X), !. % Si no se conoce entonces se pregunta y se guarda como "known"
 
-% SE PREGUNTA AL USUARIO SI TIENE UN PREUPUESTO PARA EL VUELO
+% SE PREGUNTA AL USUARIO SI TIENE UN PRESUPUESTO PARA EL VUELO
 askPresupuesto(X):-  
   write('Tiene algun presupuesto?'),
   nl,
