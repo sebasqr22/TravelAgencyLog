@@ -1,12 +1,15 @@
 :- [vuelos].
 :- ['GLC'].
-:- ['Grafo'].
+:- [grafo].
 
 %consult("/Users/sebastianqr.2208/Documents/GitHub/TravelAgencyLog/Tarea.pl").
 
 % Definici�n de reglas para los par�metros
-
-origen(X):- lugar(Y), askOrigen(X,Y).
+origen(X):- lugar(L), askOrigen(X,L).
+destino(X):- lugar(L), askDestino(X,L).
+aerolineas(X):- aeroLinea(L), askAero(X,L).
+clase(X):- clases(L), askClases(X,L).
+presupuesto(X):- askPresupuesto(X).
 
 tipo(X):- posibles_tipos(L), askTipo(X,L).
 calorias(X):- askCalorias(X, 1200, 4200).
@@ -18,32 +21,33 @@ comida(X):- posibles_comidas(L),askComida(X,L).
 main:- startup1.
 
 startup1:-
-   write('Bienvenido a TravelAgencyLog la mejor lógica de llegar a su destino.'),
+   write('Bienvenido a TravelAgencyLog: La mejor logica de llegar a su destino.'),
    nl,
    identify.
 
 
 identify:-
   retractall(known(_,_)),         % clear stored information
-  vuelo(X), %tomar vuelo disponible
-  write(X),nl.
+  vuelos(X), %tomar vuelo disponible
+  write(X),nl,
+  write('Muchas gracias por utilizar TravelAgencyLog').
 
 identify:-
-  write('Sus selecciones no calzan con ningun vuelo.'),nl.
+  write('Lamentablemente no tenemos un vuelo que se ajuste a sus necesidades.'),nl.
 
 
 
 
 askOrigen(X,_):-  %Se pregunta por el lugar de origen del vuelo
-  known(tipo,X), !.
+  known(origen,X), !.
 
 askOrigen(X,Menu):-  % Si no se conoce entonces se pregunta y se guarda como "known"
-  write('Por favor indiqueme cual es el origen de su vuelo: '),
+  write('De las siguientes opciones, por favor indiqueme cual es el origen de su vuelo: '),
   nl, display_menu(Menu),
   my_read(ListResponse),
   askOrigenAux(X,ListResponse, Menu).
 
-askOrigen(X):- askOrigen(X).
+askOrigen(X,Menu):- askOrigen(X,Menu).
 
 askOrigenAux(X,ListResponse, Menu):-
   oracion(ListResponse,[]),
@@ -55,199 +59,134 @@ askOrigenAux(X,ListResponse, Menu):-
 
 askOrigenAux(_X,_ListResponse,_Menu):-
   write('No comprendo lo que indicaste, Puedes volverlo a formular?'),
+  nl,
   !,
   fail.
 
-askTipo(X,_):-  % Si ya se conoce entonces solo se toma la conocida
-  known(tipo,X), !.
+askDestino(X,_):-  %Se pregunta por el lugar de destino del vuelo
+  known(destino,X), !.
 
-askTipo(X,Menu):-  % Si no se conoce entonces se pregunta y se guarda como "known"
-  write('�Tiene alguna preferencia para el tipo de dieta a realizar entre las siguientes opciones?'),
+askDestino(X,Menu):-  % Si no se conoce entonces se pregunta y se guarda como "known"
+  write('Muy bien! Ahora, de las siguientes opciones, por favor indiqueme cual es el destino de su vuelo: '),
   nl, display_menu(Menu),
   my_read(ListResponse),
-  askTipoAux(X,ListResponse,Menu).
+  askDestinoAux(X,ListResponse, Menu).
 
-askTipo(X,Menu):- askTipo(X,Menu).
+askDestino(X,Menu):- askDestino(X,Menu).
 
-askTipoAux(X,ListResponse,Menu):-
+askDestinoAux(X,ListResponse, Menu):-
   oracion(ListResponse,[]),
   miembro(X,ListResponse),
   miembro(X,Menu),
   !,
-  asserta(known(tipo,X)).
+  asserta(known(destino,X)).
 
-askTipoAux(X,ListResponse,_Menu):-
-  oracion(ListResponse,[]),
-  miembro(Atom,ListResponse),
-  (Atom='No', X=[] ; Atom='proteica', X=proteina),
-  !,
-  asserta(known(tipo,X)).
 
-askTipoAux(_X,_ListResponse,_Menu):-
-  write('No comprend� lo que indicaste, �Puedes volverlo a formular?'),
+askDestinoAux(_X,_ListResponse,_Menu):-
+  write('No comprendo lo que indicaste, Puedes volverlo a formular?'),
+  nl,
   !,
   fail.
 
-% Preguntar calor�as
-askCalorias(X, _Min, _Max):-
-  known(calorias,X),
-  !.
 
-askCalorias(X, _Min, _Max):-
-  write('�Tienes pensado/a una cantidad espec�fica de calor�as diarias por consumir?'),
+askAero(X,_):-  % Si ya se conoce entonces solo se toma la conocida
+  known(aerolinea,X), !.
+
+askAero(X,Menu):-  % Si no se conoce entonces se pregunta y se guarda como "known"
+  write('Tiene alguna preferencia de aerolinea?'),
   nl,
   my_read(ListResponse),
-  askCaloriasAux(X,ListResponse).
+  askAeroAux(X,ListResponse,Menu).
 
-askCalorias(X, Min, Max):- askCalorias(X, Min, Max).
+askAero(X,Menu):- askAero(X,Menu).
 
-askCaloriasAux(X,ListResponse):-
+askAeroAux(X,ListResponse,Menu):-
   oracion(ListResponse,[]),
-  miembro(Atom,ListResponse),
-  atom_number(Atom,X),
-  1199<X,
-  X<4201,
+  miembro(X,ListResponse),
+  miembro(X,Menu),
   !,
-  asserta(known(calorias,X)).
+  asserta(known(aerolinea,X)).
 
-askCaloriasAux(X,ListResponse):-
+askAeroAux(X,ListResponse,_Menu):-
   oracion(ListResponse,[]),
   miembro(Atom,ListResponse),
-  Atom='No',
+  miembro(Atom, ['No', 'no']), 
   X=[],
   !,
-  asserta(known(calorias,X)).
+  asserta(known(aerolinea,X)).
 
-askCaloriasAux(_X,ListResponse):-
-  oracion(ListResponse,[]),
-  miembro(Atom,ListResponse),
-  atom_number(Atom,Y),
-  Y<1200,
-  write('La cantidad de calor�as que indicaste est� por debajo del m�nimo recomendado, vuelve a indicar un nuevo valor.'),
+askAeroAux(_X,_ListResponse,_Menu):-
+  write('No comprendo lo que indicaste, Puedes volverlo a formular?'),
+  nl,
   !,
   fail.
 
-askCaloriasAux(_X,ListResponse):-
-  oracion(ListResponse,[]),
-  miembro(Atom,ListResponse),
-  atom_number(Atom,Y),
-  Y>4200,
-  write('La cantidad de calor�as que indicaste est� por encima del m�ximo recomendado, vuelve a indicar un nuevo valor.'),
-  !,
-  fail.
 
-askCaloriasAux(_X,_ListResponse):-
-  write('No compred� lo que indicaste, �Puedes volverlo a formular?'),
-  !,
-  fail.
+askClases(X,_):-  % Si ya se conoce entonces solo se toma la conocida
+  known(clase,X), !.
 
-% Preguntar padecimientos
-
-askPadecimientos(X,_):-  % Si ya se conoce entonces solo se toma la conocida
-  known(padecimientos,X), !.
-
-askPadecimientos(X,Menu):-  % Si no se conoce entonces se pregunta y se guarda como "known"
-  write('Tiene alguna enfermedad que pueda afectar su dieta, como las siguientes opciones?'),
+askClases(X,Menu):-  % Si no se conoce entonces se pregunta y se guarda como "known"
+  write('Tiene alguna clase preferencia de las siguientes opciones?'),
   nl, display_menu(Menu),
   my_read(ListResponse),
-  askPadecimientosAux(X,ListResponse,Menu).
+  askClasesAux(X,ListResponse,Menu).
 
-askPadecimientos(X,Menu):- askPadecimientos(X,Menu).
+askClases(X,Menu):- askClases(X,Menu).
 
-askPadecimientosAux(X,ListResponse,ListPadecimientos):-
+askClasesAux(X,ListResponse,Menu):-
   oracion(ListResponse,[]),
   miembro(X,ListResponse),
-  miembro(X,ListPadecimientos),
+  miembro(X,Menu),
   !,
-  asserta(known(padecimientos,X)).
+  asserta(known(clase,X)).
 
-askPadecimientosAux(X,ListResponse,_ListPadecimientos):-
+askClasesAux(X,ListResponse,_Menu):-
   oracion(ListResponse,[]),
   miembro(Atom,ListResponse),
-  Atom='No',
-  X=[],
+  miembro(Atom, ['No', 'no']), 
+  X=economica,
   !,
-  asserta(known(padecimientos,X)).
+  asserta(known(clase,X)).
 
-askPadecimientosAux(_X,_ListResponse,_ListPadecimientos):-
-  write('No compred� lo que indicaste, �Puedes volverlo a formular?'),
+askClasesAux(_X,_ListResponse,_Menu):-
+  write('No comprendo lo que indicaste, Puedes volverlo a formular?'),
+  nl,
   !,
   fail.
 
-% Preguntar nivel de actividad
-askActividad(X):-
-  known(actividad, X), !.
+%
+askPresupuesto(X):-  % Si ya se conoce entonces solo se toma la conocida
+  known(presupuesto,X), !.
 
-askActividad(X):-
-  write('Cu�ntas veces a la semana es activo/a f�sicamente?'),
+askPresupuesto(X):-  % Si no se conoce entonces se pregunta y se guarda como "known"
+  write('Tiene algun presupuesto?'),
   nl,
   my_read(ListResponse),
-  askActividadAux(X,ListResponse).
+  askPresupuestoAux(X,ListResponse).
 
-askActividad(X):- askActividad(X).
+askPresupuesto(X):- askPresupuesto(X).
 
-askActividadAux(X,ListResponse):-
+askPresupuestoAux(X,ListResponse):-
   oracion(ListResponse,[]),
   miembro(Atom,ListResponse),
   atom_number(Atom,X),
-  X=<7,
   !,
-  asserta(known(actividad,X)).
+  asserta(known(presupuesto,X)).
 
-askActividadAux(X,ListResponse):-
+askPresupuestoAux(X,ListResponse):-
   oracion(ListResponse,[]),
   miembro(Atom,ListResponse),
-  atom_number(Atom,X),
-  X>7,
+  miembro(Atom, ['No', 'no', 'ninguno']),  
+  X=1500,
   !,
-  write('No se tienen dietas disponibles para una cantidad tan alta de actividad f�sica, indique una cantidad menor'),
-  !,
-  fail.
+  asserta(known(presupuesto,X)).
 
-askActividadAux(X,ListResponse):-
-  oracion(ListResponse,[]),
-  miembro(Atom,ListResponse),
-  Atom='No',
-  X=0,
-  !,
-  asserta(known(actividad,X)).
-
-askActividadAux(_X,_ListResponse):-
-  write('No compred� lo que indicaste, �Puedes volverlo a formular?'),
-  !,
-  fail.
-
-% Preguntar comida no deseada
-askComida(X,_Comidas):-
-  known(comida, X),!.
-
-askComida(X,Comidas):-
-  write('�Hay alguna comida en espec�fico que no desee comer?'),
+askPresupuestoAux(_X,_ListResponse):-
+  write('No comprendo lo que indicaste, Puedes volverlo a formular?'),
   nl,
-  my_read(ListResponse),
-  askComidaAux(X,ListResponse,Comidas).
-
-askComida(X,Comidas):-askComida(X,Comidas).
-
-askComidaAux(X,ListResponse,Comidas):-
-  oracion(ListResponse,[]),
-  miembro(X,ListResponse),
-  miembro(X,Comidas),
-  !,
-  asserta(known(comida,X)).
-
-askComidaAux(X,ListResponse,_Comidas):-
-  oracion(ListResponse,[]),
-  miembro(Atom,ListResponse),
-  Atom='No',
-  X=[],
-  !,
-  asserta(known(comida,X)).
-
-askComidaAux(_X,_ListResponse,_Comidas):-
-  write('No compred� lo que indicaste, �Puedes volverlo a formular?'),
   !,
   fail.
+
 
 % Funciones auxiliares para mostrar men� de opciones (como para mostrar tipos de padecimientos)
 display_menu(Menu):-

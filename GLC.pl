@@ -1,108 +1,119 @@
-% Oración: Sintagma inicial del BNF. A partir de este, se divide en los
-% distintos sintagmas y elementos de las oraciones válidas Para
-% verificar si una oración es válida o no, se escribe
-% oracion(Lista_palabras_de_la_oración,[]).
+% Oraciï¿½n: Sintagma inicial del BNF. A partir de este, se divide en los
+% distintos sintagmas y elementos de las oraciones vï¿½lidas Para
+% verificar si una oraciï¿½n es vï¿½lida o no, se escribe
+% oracion(Lista_palabras_de_la_oraciï¿½n,[]).
 
-oracion(S0,S):-agradecimiento(S0,S1),sintagma_nominal(Pers,Num,_Gend,S1,S2),sintagma_verbal(Pers,Num,S2,S).
-oracion(S0,S):-agradecimiento(S0,S1),advebio_negacion_afirmacion(S1,S2),sintagma_nominal(Pers,Num,_Gend,S2,S3),sintagma_verbal(Pers,Num,S3,S).
-oracion(S0,S):-sintagma_nominal(Pers,Num,_Gend,S0,S1),sintagma_verbal(Pers,Num,S1,S).
-oracion(S0,S):-advebio_negacion_afirmacion(S0,S1),sintagma_nominal(Pers,Num,_Gend,S1,S2),sintagma_verbal(Pers,Num,S2,S).
-oracion(S0,S):-sintagma_verbal(_Pers,_Num,S0,S).
-oracion(S0,S):-sintagma_nominal(_Pers,_Num,_Gend,S0,S).
-oracion(S0,S):-agradecimiento(S0,S).
-oracion(S0,S):-saludoGeneral(S0,S).
+
+
+oracion(S0,S):-sintagma_nominal(S0,S1),sintagma_verbal(S1,S).
+oracion(S0,S):-advebio_negacion_afirmacion(S0,S1),sintagma_nominal(S1,S2),sintagma_verbal(S2,S).
+oracion(S0,S):-sintagma_verbal(S0,S). %%%%%%%
+oracion(S0,S):-sintagma_nominal(S0,S).
 oracion(S0,S):-advebio_negacion_afirmacion(S0,S).
 
 %sintagma_nominal: corresponde a los pronombres, nombres y complementos directos que pueden ser utilizados como sujeto en las oraciones
-sintagma_nominal(Pers,Num,Gend,S0,S):-pronombre(Pers,Num,Gend,S0,S).
-sintagma_nominal(Pers,Num,Gend,S0,S):-complemento_directo(Pers,Num,Gend,S0,S).
+sintagma_nominal(S0,S):-pronombre(S0,S).
+sintagma_nominal(S0,S):-complemento_directo(S0,S).
 
 %complemento_directo: comprende todos las posibles combinaciones vÃ¡lidas de nombres, adjetivos, y determinantes.
-complemento_directo(Pers,Num,Gend,S0,S):-nombre(Pers,Num,Gend,S0,S).
-complemento_directo(_Pers,Num,Gend,S0,S):-adjetivo(Num,Gend,S0,S).
-complemento_directo(Pers,Num,Gend,S0,S):-nombre(Pers,Num,Gend,S0,S1),adjetivo(Num,Gend,S1,S).
-complemento_directo(Pers,Num,Gend,S0,S):-determinante(Num,Gend,S0,S1),nombre(Pers,Num,Gend,S1,S).
-complemento_directo(Pers,Num,Gend,S0,S):-determinante(Num,Gend,S0,S1),nombre(Pers,Num,Gend,S1,S2),adjetivo(Num,Gend,S2,S).
-
-%sintagma_verbal: comprende todas las combinaciones vÃ¡lidas de verbos, verbos infinitivos, y complementos directos.
-sintagma_verbal(Pers,Num,S0,S):-verbo_transitivo(Pers,Num,S0,S).
-sintagma_verbal(Pers,Num,S0,S):-verbo_transitivo(Pers,Num,S0,S1),complemento_directo(_Pers2,_Num2,_Gend2,S1,S).
-sintagma_verbal(Pers,Num,S0,S):-verbo_transitivo(Pers,Num,S0,S1),verbo_infinitivo(S1,S).
-sintagma_verbal(Pers,Num,S0,S):-verbo_transitivo(Pers,Num,S0,S1),verbo_infinitivo(S1,S2),
-                                complemento_directo(_Pers2,_Num2,_Gend2,S2,S).
+complemento_directo(S0,S):-nombre(S0,S).
+complemento_directo(S0,S):-adjetivo(S0,S).
+complemento_directo(S0,S):-nombre(S0,S1),adjetivo(S1,S).
+complemento_directo(S0,S):-determinante(S0,S1),nombre(S1,S).
+complemento_directo(S0,S):-determinante(S0,S1),nombre(S1,S2),adjetivo(S2,S).
+sintagma_verbal(S0,S):-verbo_transitivo(S0,S).
+sintagma_verbal(S0,S):-verbo_transitivo(S0,S1),complemento_directo(S1,S).%%%%
+sintagma_verbal(S0,S):-verbo_transitivo(S0,S1),verbo_infinitivo(S1,S).
+sintagma_verbal(S0,S):-verbo_transitivo(S0,S1),verbo_infinitivo(S1,S2),
+                                complemento_directo(S2,S).
 
 % determinante: Son todos los articulos que pueden estar junto con un
 % nombre. Estan dados por
-% determinante(numero,genero,['determinante'|S],S). (singulaar, plural,
+% determinante(numero,genero,['determinante'|S],S). (singular, plural,
 % masculino, femenino)
-determinante(s,m,['el'|S],S).
-determinante(s,m,['al'|S],S).
-determinante(p,m,['los'|S],S).
-determinante(p,m,['a','los'|S],S).
-determinante(s,f,['la'|S],S).
-determinante(s,f,['a','la'|S],S).
-determinante(p,f,['las'|S],S).
-determinante(p,f,['a','las'|S],S).
-determinante(s,m,['un'|S],S).
-determinante(s,m,['a','un'|S],S).
-determinante(p,m,['unos'|S],S).
-determinante(p,m,['a','unos'|S],S).
-determinante(s,f,['una'|S],S).
-determinante(s,f,['a','una'|S],S).
-determinante(p,f,['unas'|S],S).
-determinante(p,f,['a','unas'|S],S).
+determinante(['el'|S],S).
+determinante(['mas'|S],S).
+determinante(['por'|S],S).
+determinante(['en'|S],S).
+determinante(['para'|S],S).
+determinante(['mi'|S],S).
+determinante(['este'|S],S).
+determinante(['al'|S],S).
+determinante(['a'|S],S).
+determinante(['los'|S],S).
+determinante(['a','los'|S],S).
+determinante(['en','los'|S],S).
+determinante(['la'|S],S).
+determinante(['en','la'|S],S).
+determinante(['a','la'|S],S).
+determinante(['las'|S],S).
+determinante(['en','las'|S],S).
+determinante(['a','las'|S],S).
+determinante(['un'|S],S).
+determinante(['a','un'|S],S).
+determinante(['unos'|S],S).
+determinante(['a','unos'|S],S).
+determinante(['una'|S],S).
+determinante(['a','una'|S],S).
+determinante(['unas'|S],S).
+determinante(['a','unas'|S],S).
 
 %determinante: Son todos los nombres que pueden estÃ¡r dados para un complemento directo o sujeto del sintagma nominal
 % Estan dados por nombre(persona(generalmente
 % t[tercera]),numero,genero,['nombre'|S],S)
-nombre(t,s,m,['costa rica'|S],S).
-nombre(t,p,m,['panama'|S],S).
-nombre(t,s,f,['brazil'|S],S).
-nombre(t,s,m,['mexico'|S],S).
-nombre(t,s,f,['miami'|S],S).
-nombre(t,s,f,['nueva york'|S],S).
-nombre(t,s,m,['orlando'|S],S).
-nombre(t,s,m,['chile'|S],S).
-nombre(t,s,m,['colombia'|S],S).
-nombre(t,p,f,['vuelo'|S],S).
-nombre(t,s,f,['clase'|S],S).
-nombre(t,s,f,['aerolinea'|S],S).
-nombre(t,s,f,['dolares'|S],S).
-nombre(t,s,m,['copa'|S],S).
-nombre(t,s,m,['avianca'|S],S).
-nombre(t,s,m,['latam'|S],S).
-nombre(t,s,m,['american'|S],S).
-nombre(t,s,f,['united'|S],S).
-nombre(t,s,f,['aeromexico'|S],S).
-nombre(t,s,f,['economica'|S],S).
-nombre(t,s,f,['de negocios'|S],S).
-nombre(t,s,f,['ambas'|S],S).
-nombre(t,s,f,['preferencia'|S],S).
-nombre(t,p,f,['prefrencias'|S],S).
-nombre(t,p,f,[_NumCalorias,'calorias'|S],S).
-nombre(t,s,m,['activo'|S],S).
-nombre(t,p,f,[_NumVeces,'veces','a','la','semana'|S],S).
+nombre(['costarica'|S],S).
+nombre(['panama'|S],S).
+nombre(['brazil'|S],S).
+nombre(['mexico'|S],S).
+nombre(['miami'|S],S).
+nombre(['nueva york'|S],S).
+nombre(['orlando'|S],S).
+nombre(['chile'|S],S).
+nombre(['colombia'|S],S).
+nombre(['vuelo'|S],S).
+nombre(['destino'|S],S).
+nombre(['favor'|S],S).
+nombre(['clase'|S],S).
+nombre(['aerolinea'|S],S).
+nombre(['dolares'|S],S).
+nombre(['copa'|S],S).
+nombre(['avianca'|S],S).
+nombre(['latam'|S],S).
+nombre(['american'|S],S).
+nombre(['united'|S],S).
+nombre(['aeromexico'|S],S).
+nombre(['economica'|S],S).
+nombre(['de negocios'|S],S).
+nombre(['ambas'|S],S).
+nombre(['preferencia'|S],S).
+nombre(['preferencias'|S],S).
+nombre([_NumDolares|S],S).
+nombre([_NumDolares,'dolares'|S],S).
+nombre(['activo'|S],S).
+nombre([_NumVeces,'veces','a','la','semana'|S],S).
 
 % adjetivos: Son todos los adjetivos que pueden estar dados para
 % describir un nombre de un complemento directo Estan dados por
 % adjetivo(numero,genero,['adjetivo'|S],S)
-adjetivo(s,m,['rapido'|S],S). % (singular, plural), (masculino, femenino)
-adjetivo(s,f,['charter'|S],S).
-adjetivo(p,m,['economica'|S],S).
-adjetivo(p,f,['negocios'|S],S).
-adjetivo(s,m,['barato'|S],S).
-adjetivo(p,m,['caro'|S],S).
-adjetivo(s,f,['simple'|S],S).
-adjetivo(p,f,['directo'|S],S).
-adjetivo(s,f,['indirecto'|S],S).
-adjetivo(s,m,[_NumVeces,'veces','a','la','semana'|S],S).
+adjetivo(['rapido'|S],S). % (singular, plural), (masculino, femenino)
+adjetivo(['charter'|S],S).
+adjetivo(['economica'|S],S).
+adjetivo(['negocios'|S],S).
+adjetivo(['barato'|S],S).
+adjetivo(['caro'|S],S).
+adjetivo(['simple'|S],S).
+adjetivo(['directo'|S],S).
+adjetivo(['indirecto'|S],S).
 
 %verbo_infinitivo: verbos infinitivos que se pueden usar en conjunto con los verbos transitivos disponibles.
 %Estan dados por verbo_infinitivo(['verbo_infinitivo'|S],S)
 verbo_infinitivo(['llevar'|S],S).
 verbo_infinitivo(['ser'|S],S).
+verbo_infinitivo(['ir'|S],S).
+verbo_infinitivo(['querer'|S],S).
 verbo_infinitivo(['llegar'|S],S).
 verbo_infinitivo(['hacer'|S],S).
+verbo_infinitivo(['viajar'|S],S).
 verbo_infinitivo(['estar'|S],S).
 verbo_infinitivo(['volar'|S],S).
 verbo_infinitivo(['seguir'|S],S).
@@ -114,59 +125,55 @@ verbo_infinitivo(['obtener'|S],S).
 %verbo_transitivo: Son todos los verbos conjugados transitivos que se pueden utilizar en las oraciones
 % Estan dados por
 % verbo_transitivo(persona,numero,['verbo_transitivo'|S],S)
-verbo_transitivo(p,s,['salgo'|S],S).
-verbo_transitivo(p,s,['deseo'|S],S).
-verbo_transitivo(p,s,['quisiera'|S],S).
-verbo_transitivo(p,s,['tengo'|S],S).
-verbo_transitivo(p,s,['quiero'|S],S).
-verbo_transitivo(p,s,['estoy'|S],S).
-verbo_transitivo(t,s,['recomendaron'|S],S).
-verbo_transitivo(t,s,['han','recomendado'|S],S).
-verbo_transitivo(p,s,['he','pensado'|S],S).
-verbo_transitivo(p,s,['prefiero'|S],S).
-verbo_transitivo(t,s,['gusta'|S],S).
+verbo_transitivo(['salgo'|S],S).
+verbo_transitivo(['voy'|S],S).
+verbo_transitivo(['sale'|S],S).
+verbo_transitivo(['encuentro'|S],S).
+verbo_transitivo(['quiero'|S],S).
+verbo_transitivo(['seria'|S],S).
+verbo_transitivo(['gustaria'|S],S).
+verbo_transitivo(['deseo'|S],S).
+verbo_transitivo(['quisiera'|S],S).
+verbo_transitivo(['tengo'|S],S).
+verbo_transitivo(['estoy'|S],S).
+verbo_transitivo(['he','pensado'|S],S).
+verbo_transitivo(['prefiero'|S],S).
+verbo_transitivo(['gusta'|S],S).
 
 % pronombre: Son todos los pronombres que se puede usar como sujeto de
 % las oraciones validas. Estan dados por
 % pronombre(persona,numero,genero,['pronombre'|S],S)
-pronombre(p,s,n,['Yo'|S],S).
-pronombre(p,s,n,['yo'|S],S).
-pronombre(p,s,n,['Me'|S],S).
-pronombre(p,s,n,['me'|S],S).
-pronombre(t,s,n,['Me'|S],S).
-pronombre(t,s,n,['me'|S],S).
+pronombre(['Yo'|S],S).
+pronombre(['yo'|S],S).
+pronombre(['Me'|S],S).
+pronombre(['me'|S],S).
+pronombre(['Me'|S],S).
+pronombre(['me'|S],S).
+pronombre(['mi'|S],S).
 
-%agradecimiento: Son todas las expresiones de agradecimiento que permite colocar en las oraciones,
-%Estan dados por agradecimiento(['agradecimiento'|S],S)
-agradecimiento(['Gracias,'|S],S).
-agradecimiento(['Muchas','Gracias,'|S],S).
-agradecimiento(['Gracias'|S],S).
-agradecimiento(['Muchas','Gracias'|S],S).
+
 
 %advebio_negacion_afirmacion: Son todas los adverbios de negaciÃ³n y afirmaciÃ³n que permite utilizar en las oraciones
 %Estan dados por advebio_negacion_afirmacion(['advebio_negacion_afirmacion'|S],S)
 advebio_negacion_afirmacion(['si'|S],S).
 advebio_negacion_afirmacion(['Si'|S],S).
-advebio_negacion_afirmacion(['si,'|S],S).
+advebio_negacion_afirmacion(['Si,'|S],S).
+advebio_negacion_afirmacion(['si,', ''|S],S).
 advebio_negacion_afirmacion(['Si,'|S],S).
 advebio_negacion_afirmacion(['no'|S],S).
 advebio_negacion_afirmacion(['No'|S],S).
 advebio_negacion_afirmacion(['no,'|S],S).
 advebio_negacion_afirmacion(['No,'|S],S).
+advebio_negacion_afirmacion(['ninguno,'|S],S).
 
 
-%saludo: Son todas los saludos disponibles para iniciar el programa de NutriTec
-%Estan dados por saludo(['saludo'|S],S)
-saludo(['Hola'|S],S).
-saludo(['Buenos','dias'|S],S).
-saludo(['Buenas','tardes'|S],S).
-saludo(['Buenas','noches'|S],S).
 
-%my_read: Es la función dada para leer el input del usuario,
-% de tal manera que se guarde como una lista donde cada átomo es un
-% elemento de la lista, ya que así se debe guardar para sea evaluado por
-% la regla oración(). List es la lista que contiene lo que el usuario
-% escribió.
+
+%my_read: Es la funciï¿½n dada para leer el input del usuario,
+% de tal manera que se guarde como una lista donde cada ï¿½tomo es un
+% elemento de la lista, ya que asï¿½ se debe guardar para sea evaluado por
+% la regla oraciï¿½n(). List es la lista que contiene lo que el usuario
+% escribiï¿½.
 my_read(List):-
 read_string(user,"\n","\r",_,String), % divide la oracion en palabras
 atom_string(Atom,String),             % Convierte el atomo a un string
